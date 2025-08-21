@@ -1,0 +1,18 @@
+community:
+  engagement:
+    daily_messages: 50-100
+    weekly_active: 80+
+  growth:
+    monthly_growth: 15
+    target_2025: 500
+  metadata:
+    last_api_check: '2025-08-21 16:10:31'
+    update_source: manual_fallback
+  name: DevOps Jogja
+  stats:
+    active_organizers: 8
+    blog_posts: 2
+    events_organized: 8
+    last_updated: '2025-08-21'
+    members: 200
+  telegram_url: https://t.me/devopsjogja

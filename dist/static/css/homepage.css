@@ -311,7 +311,7 @@
    ======================================== */
 
 .speaker-cta {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
     position: relative;
     overflow: hidden;
 }
@@ -335,9 +335,9 @@
 }
 
 .speaker-button {
-    background: linear-gradient(45deg, #8b5cf6, #7c3aed);
-    color: white;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    background: white;
+    color: black;
+    /* box-shadow: 0 4px 15px rgba(105, 246, 92, 0.3); */
     transition: all 0.3s ease;
     border: none;
     text-decoration: none;
@@ -345,9 +345,9 @@
 
 .speaker-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-    background: linear-gradient(45deg, #7c3aed, #6d28d9);
-    color: white;
+    /* box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4); */
+    background: white;
+    color: black;
     text-decoration: none;
 }
 

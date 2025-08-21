@@ -240,6 +240,9 @@ class StaticSiteBuilder:
                 sponsors = sponsor_data.get("sponsors", []) if sponsor_data else []
                 active_sponsors = [sponsor for sponsor in sponsors if sponsor.get("active", True)]
                 
+                # Load stats data
+                stats_data = self.yaml_loader.load_yaml("content/stats.yaml")
+                
                 gallery_images = self.get_gallery_images()
                 
                 # Add current_url for sharing
@@ -253,6 +256,7 @@ class StaticSiteBuilder:
                     sponsors=active_sponsors,
                     gallery_images=gallery_images,
                     current_url=current_url,
+                    stats=stats_data,
                 )
                 
                 self.save_page(html, "index.html")

@@ -193,6 +193,9 @@ def index():
     # Filter only active sponsors
     active_sponsors = [sponsor for sponsor in sponsors if sponsor.get("active", True)]
 
+    # Load stats data
+    stats_data = yaml_loader.load_yaml("content/stats.yaml")
+
     # Get gallery images
     gallery_images = get_gallery_images()
 
@@ -203,6 +206,7 @@ def index():
         latest_events=latest_events,
         sponsors=active_sponsors,
         gallery_images=gallery_images,
+        stats=stats_data,
     )
 
 
@@ -311,4 +315,4 @@ if __name__ == "__main__":
     os.makedirs("static/images", exist_ok=True)
     os.makedirs("static/images/gallery", exist_ok=True)
 
-    app.run(debug=True, host="0.0.0.0", port=3000)
+    app.run(debug=True, host="0.0.0.0", port=3001)
