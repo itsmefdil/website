@@ -259,6 +259,16 @@ def about():
     return render_template("about.html", data=about_data, current_page="about")
 
 
+@app.route("/gallery")
+def gallery():
+    """Gallery page"""
+    gallery_images = get_gallery_images()
+    return render_template(
+        "gallery.html", gallery_images=gallery_images, current_page="gallery"
+    )
+
+
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template("404.html"), 404
@@ -318,4 +328,4 @@ if __name__ == "__main__":
     os.makedirs("static/images", exist_ok=True)
     os.makedirs("static/images/gallery", exist_ok=True)
 
-    app.run(debug=True, host="0.0.0.0", port=3000)
+    app.run(debug=True, host="0.0.0.0", port=3008)

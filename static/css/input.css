@@ -2,13 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
 /* Custom styles for DevOps Jogja */
 @layer base {
   body {
-    @apply font-sans bg-gray-900 text-gray-100;
+    @apply font-sans bg-background text-foreground;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold text-white;
   }
 }
@@ -17,19 +69,19 @@
   .tech-card {
     @apply bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-700;
   }
-  
+
   .tech-button {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200;
   }
-  
+
   .tech-button-outline {
     @apply border-2 border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200;
   }
-  
+
   .hero-section {
     @apply bg-gradient-to-br from-tech-dark via-slate-800 to-slate-900 text-white;
   }
-  
+
   .navbar {
     @apply bg-gray-800/70 backdrop-blur-lg border-b border-gray-600/20 sticky top-0 z-50 transition-all duration-500;
     background: rgba(31, 41, 55, 0.7);
@@ -37,7 +89,7 @@
     border: 1px solid rgba(156, 163, 175, 0.18);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
-  
+
   .navbar-scrolled {
     @apply bg-gray-800/80 backdrop-blur-2xl border-b border-gray-600/30 shadow-2xl;
     background: rgba(31, 41, 55, 0.8);
@@ -45,70 +97,70 @@
     border: 1px solid rgba(156, 163, 175, 0.3);
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
   }
-  
+
   .footer {
     @apply bg-gray-900 text-white;
   }
-  
+
   .blog-card {
     @apply tech-card overflow-hidden;
   }
-  
+
   .event-card {
     @apply tech-card p-6 hover:transform hover:scale-105 transition-transform duration-200;
   }
-  
+
   .organizer-card {
     @apply tech-card p-6 text-center;
   }
-  
+
   .tech-icon {
     @apply w-12 h-12 text-blue-400;
   }
-  
+
   .section-title {
     @apply text-3xl font-bold text-center mb-12 text-white;
   }
-  
+
   .prose-custom {
     @apply prose prose-invert prose-lg max-w-none;
   }
-  
+
   .prose-custom h1 {
     @apply text-4xl font-bold text-white mb-6;
   }
-  
+
   .prose-custom h2 {
     @apply text-3xl font-bold text-white mb-4 mt-8;
   }
-  
+
   .prose-custom h3 {
     @apply text-2xl font-semibold text-white mb-3 mt-6;
   }
-  
+
   .prose-custom p {
     @apply text-gray-300 mb-4 leading-relaxed;
   }
-  
+
   .prose-custom code {
     @apply bg-gray-900/90 text-green-400 px-3 py-1 rounded-md text-sm font-mono border border-gray-700/50;
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
   }
-  
+
   .prose-custom pre {
     @apply bg-gray-900/95 text-gray-100 p-6 rounded-xl overflow-x-auto border border-gray-700/30;
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     position: relative;
   }
-  
+
   .prose-custom pre code {
     @apply bg-transparent text-gray-100 p-0 border-0;
     backdrop-filter: none;
     box-shadow: none;
   }
-  
+
   .prose-custom pre::before {
     content: '';
     position: absolute;
@@ -159,7 +211,7 @@
     width: 1rem;
     height: 1rem;
   }
-  
+
   .prose-custom blockquote {
     @apply border-l-4 border-blue-400/60 p-6 italic rounded-r-lg;
     background: rgba(59, 130, 246, 0.1);
@@ -169,7 +221,7 @@
     border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     box-shadow: 0 4px 16px 0 rgba(59, 130, 246, 0.1);
   }
-  
+
   .tag {
     @apply inline-block px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2 transition-all duration-200;
     background: rgba(59, 130, 246, 0.15);
@@ -177,13 +229,13 @@
     border: 1px solid rgba(59, 130, 246, 0.3);
     backdrop-filter: blur(4px);
   }
-  
+
   .tag:hover {
     background: rgba(59, 130, 246, 0.25);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px 0 rgba(59, 130, 246, 0.2);
   }
-  
+
   .meta-info {
     @apply text-gray-400 text-sm flex items-center space-x-4;
   }
@@ -233,10 +285,71 @@
     transform: translateY(20px);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  
+
   .animate-in {
-    opacity: 1;
-    transform: translateY(0);
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+  }
+
+  .fade-in {
+    animation-name: fadeIn;
+  }
+
+  .zoom-in {
+    animation-name: zoomIn;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation-name: slideInBottom;
+  }
+
+  .slide-in-from-bottom-6 {
+    animation-name: slideInBottom;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideInBottom {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Grid Backgrounds */
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(0 0 0 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+  }
+
+  .dark .bg-grid-pattern {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
   }
 
   /* Image lazy loading */
@@ -249,35 +362,41 @@
   .prose-custom .highlight .k,
   .prose-custom .highlight .kd,
   .prose-custom .highlight .kn {
-    color: #ff79c6; /* Keywords */
+    color: #ff79c6;
+    /* Keywords */
   }
-  
+
   .prose-custom .highlight .s,
   .prose-custom .highlight .s1,
   .prose-custom .highlight .s2 {
-    color: #f1fa8c; /* Strings */
+    color: #f1fa8c;
+    /* Strings */
   }
-  
+
   .prose-custom .highlight .m,
   .prose-custom .highlight .mi,
   .prose-custom .highlight .mf {
-    color: #bd93f9; /* Numbers */
+    color: #bd93f9;
+    /* Numbers */
   }
-  
+
   .prose-custom .highlight .c,
   .prose-custom .highlight .c1,
   .prose-custom .highlight .cm {
-    color: #6272a4; /* Comments */
+    color: #6272a4;
+    /* Comments */
     font-style: italic;
   }
-  
+
   .prose-custom .highlight .n,
   .prose-custom .highlight .nf {
-    color: #50fa7b; /* Functions */
+    color: #50fa7b;
+    /* Functions */
   }
-  
+
   .prose-custom .highlight .o {
-    color: #ff79c6; /* Operators */
+    color: #ff79c6;
+    /* Operators */
   }
 }
 
@@ -286,7 +405,7 @@
   .animate-float {
     animation: none !important;
   }
-  
+
   .animate-out,
   .animate-in {
     transition: none !important;

@@ -101,7 +101,7 @@ dev_server() {
     print_warning "Server will run on http://localhost:3000"
     export FLASK_ENV=development
     export FLASK_DEBUG=1
-    python3 app.py
+    uv run python3 app.py
 }
 
 # Function to build static site
@@ -112,7 +112,7 @@ build_static() {
     build_css
     
     # Build static site
-    python3 build.py $1
+    uv run python3 build.py $1
     
     print_success "Static site built successfully in 'dist' directory"
 }
@@ -126,10 +126,10 @@ serve_static() {
         build_static
     fi
     
-    print_status "Starting local server on http://localhost:8080"
+    print_status "Starting local server on http://localhost:8888"
     print_warning "Press Ctrl+C to stop the server"
     
-    cd dist && python3 -m http.server 8080
+    cd dist && uv run python3 -m http.server 8888 --bind 0.0.0.0
 }
 
 # Function to clean build artifacts
@@ -139,7 +139,7 @@ clean() {
     # Remove dist directory
     if [ -d "dist" ]; then
         rm -rf dist
-        print_status "Removed dist directory"
+        print_status "Removed dist directory"   
     fi
     
     # Remove CSS build artifacts

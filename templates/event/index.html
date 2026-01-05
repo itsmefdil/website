@@ -4,114 +4,157 @@
 
 {% block content %}
 <!-- Page Header -->
-<section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl font-bold text-white mb-4">Events</h1>
-        <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-            Jangan lewatkan event-event menarik dari DevOps Jogja. Mari belajar dan berbagi bersama komunitas.
+<section class="pt-32 pb-20 bg-background border-b border-border relative overflow-hidden">
+    <!-- Grid Background -->
+    <div class="absolute inset-0 bg-grid-pattern"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div
+            class="inline-flex items-center justify-center p-2 bg-muted rounded-full mb-4 animate-in fade-in zoom-in duration-500">
+            <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Community
+                Gatherings</span>
+        </div>
+        <h1
+            class="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            Upcoming <span class="text-primary">Events</span>
+        </h1>
+        <p
+            class="text-xl text-muted-foreground max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700">
+            Mari belajar, berbagi, dan berjejaring dalam meetup dan workshop komunitas DevOps Jogja.
         </p>
     </div>
 </section>
 
 <!-- Events -->
-<section class="py-16 bg-gray-900">
+<section class="py-16 bg-background min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {% if events %}
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for event in events %}
-            <div
-                class="event-card bg-gray-800 border border-gray-700 hover:border-purple-400 transition-colors duration-300 p-6 rounded-lg">
+            <article
+                class="group flex flex-col bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-bottom-8 fill-mode-both"
+                style="animation-delay: {{ loop.index0 * 100 }}ms">
+
                 {% if event.featured_image %}
                 {% set image_path = event.featured_image | get_image('event') %}
-                <div class="aspect-4-5 bg-gray-600 rounded-lg mb-4 bg-cover bg-center"
-                    style="background-image: url('{{ url_for('static', filename='images/event/' + image_path) }}');">
+                <div class="w-full overflow-hidden bg-muted relative">
+                    <img src="{{ url_for('static', filename='images/event/' + image_path) }}" alt="{{ event.title }}"
+                        class="w-full h-auto object-contain transform transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy">
+                    <div class="absolute top-4 right-4">
+                        {% if event.type %}
+                        <span
+                            class="inline-flex items-center rounded-md bg-background/90 backdrop-blur border border-border px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
+                            {{ event.type }}
+                        </span>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
-
-                <div class="meta-info mb-4 text-gray-400">
-                    <span class="flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                        <time datetime="{{ event.date }}">{{ event.date|date_format('%B %d, %Y') }}</time>
-                    </span>
-                    {% if event.time %}
-                    <span class="flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        {{ event.time }}
-                    </span>
-                    {% endif %}
-                </div>
-
-                {% if event.type %}
-                <span
-                    class="inline-block bg-purple-600 text-purple-100 px-3 py-1 rounded-full text-sm font-medium mb-4">
-                    {{ event.type }}
-                </span>
-                {% endif %}
-
-                <h2 class="text-xl font-semibold text-white mb-3">
-                    <a href="{{ url_for('event_detail', slug=event.slug) }}"
-                        class="hover:text-purple-400 transition-colors">
-                        {{ event.title }}
-                    </a>
-                </h2>
-
-                {% if event.location %}
-                <div class="flex items-center text-gray-300 mb-4">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                {% else %}
+                <div class="aspect-video w-full bg-muted flex items-center justify-center relative">
+                    <svg class="h-12 w-12 text-muted-foreground/50" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
-                    <span class="text-sm">{{ event.location }}</span>
+                    <div class="absolute top-4 right-4">
+                        {% if event.type %}
+                        <span
+                            class="inline-flex items-center rounded-md bg-background/90 backdrop-blur border border-border px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
+                            {{ event.type }}
+                        </span>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
 
-                <p class="text-gray-300 mb-4">{{ event.raw_content|excerpt(120) }}</p>
+                <div class="flex-1 p-6 flex flex-col">
+                    <!-- Date & Time -->
+                    <div class="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-4">
+                        <span class="flex items-center">
+                            <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <time datetime="{{ event.date }}">{{ event.date|date_format('%B %d, %Y') }}</time>
+                        </span>
+                        {% if event.time %}
+                        <span class="flex items-center">
+                            <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ event.time }}
+                        </span>
+                        {% endif %}
+                    </div>
 
-                <div class="flex items-center justify-between">
-                    <a href="{{ url_for('event_detail', slug=event.slug) }}"
-                        class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
-                        Learn More
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                    <h2
+                        class="text-xl font-bold text-card-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                        <a href="{{ url_for('event_detail', slug=event.slug) }}">
+                            {{ event.title }}
+                        </a>
+                    </h2>
+
+                    {% if event.location %}
+                    <div class="flex items-start gap-2 text-sm text-muted-foreground mb-4">
+                        <svg class="h-4 w-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
                             </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                    </a>
-                    {% if event.registration_url %}
-                    <a href="{{ event.registration_url }}" target="_blank" class="tech-button text-sm">
-                        Register
-                    </a>
+                        <span class="line-clamp-1">{{ event.location }}</span>
+                    </div>
                     {% endif %}
+
+                    <!-- Footer -->
+                    <div class="mt-auto pt-4 border-t border-border flex items-center justify-between">
+                        <a href="{{ url_for('event_detail', slug=event.slug) }}"
+                            class="text-sm font-semibold text-primary hover:text-primary/80 transition-colors inline-flex items-center">
+                            Details
+                            <svg class="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </a>
+                        {% if event.registration_url %}
+                        <a href="{{ event.registration_url }}" target="_blank"
+                            class="inline-flex items-center justify-center rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow hover:bg-primary/90 transition-all">
+                            Register
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
         {% else %}
         <!-- Empty State -->
-        <div class="text-center py-16">
-            <svg class="w-24 h-24 text-gray-500 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            <h3 class="text-2xl font-semibold text-white mb-4">Belum ada event</h3>
-            <p class="text-gray-300 mb-8 max-w-md mx-auto">
-                Event sedang dalam tahap perencanaan. Pantau terus halaman ini atau bergabung dengan Telegram untuk
-                update terbaru!
+        <div class="flex flex-col items-center justify-center py-24 text-center">
+            <div class="bg-muted/50 p-8 rounded-full mb-6">
+                <svg class="w-16 h-16 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-foreground mb-3">Belum ada event</h3>
+            <p class="text-muted-foreground mb-8 max-w-md">
+                Kami sedang merencanakan event seru lainnya. Gabung Telegram kami untuk update tercepat!
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://t.me/devopsjogja" target="_blank" class="tech-button">
+            <div class="flex gap-4">
+                <a href="https://t.me/devopsjogja" target="_blank"
+                    class="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-all">
                     Join Telegram
                 </a>
-                <a href="{{ url_for('index') }}" class="tech-button-outline">
+                <a href="{{ url_for('index') }}"
+                    class="inline-flex items-center justify-center rounded-lg border border-input bg-background px-6 py-3 text-sm font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-all">
                     Back to Home
                 </a>
             </div>
@@ -119,9 +162,4 @@
         {% endif %}
     </div>
 </section>
-{% endblock %}
-
-{% block extra_css %}
-<!-- Homepage specific styles -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
 {% endblock %}

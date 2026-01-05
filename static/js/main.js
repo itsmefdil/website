@@ -181,21 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     images.forEach(img => imageObserver.observe(img));
 
-    // Theme toggle (if implemented)
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function () {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
 
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-        }
-    }
 
     // External link handling
     document.querySelectorAll('a[target="_blank"]').forEach(link => {
@@ -368,10 +354,10 @@ function fallbackCopyTextToClipboard(text) {
 // Copy to clipboard function for sharing
 function copyToClipboard(text) {
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() {
+        navigator.clipboard.writeText(text).then(function () {
             // Show success feedback
             showCopyFeedback('Link copied to clipboard!');
-        }, function(err) {
+        }, function (err) {
             console.error('Could not copy text: ', err);
             fallbackCopyTextToClipboard(text);
         });
@@ -384,16 +370,16 @@ function copyToClipboard(text) {
 function fallbackCopyTextToClipboard(text) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    
+
     // Avoid scrolling to bottom
     textArea.style.top = "0";
     textArea.style.left = "0";
     textArea.style.position = "fixed";
-    
+
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-    
+
     try {
         const successful = document.execCommand('copy');
         if (successful) {
@@ -405,7 +391,7 @@ function fallbackCopyTextToClipboard(text) {
         console.error('Fallback: Unable to copy', err);
         showCopyFeedback('Failed to copy link', 'error');
     }
-    
+
     document.body.removeChild(textArea);
 }
 
@@ -416,14 +402,14 @@ function showCopyFeedback(message, type = 'success') {
     if (existingFeedback) {
         existingFeedback.remove();
     }
-    
+
     // Create feedback element
     const feedback = document.createElement('div');
     feedback.className = `copy-feedback fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-y-0 ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
     feedback.textContent = message;
-    
+
     document.body.appendChild(feedback);
-    
+
     // Auto remove after 3 seconds
     setTimeout(() => {
         feedback.style.transform = 'translate-y-full opacity-0';

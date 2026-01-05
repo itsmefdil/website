@@ -342,6 +342,7 @@ class StaticSiteBuilder:
             {"url": "/event/", "priority": "0.8"},
             {"url": "/about/", "priority": "0.6"},
             {"url": "/organizer/", "priority": "0.6"},
+            {"url": "/gallery/", "priority": "0.6"},
         ]
         
         # Add blog posts
@@ -398,8 +399,16 @@ class StaticSiteBuilder:
         self.build_event_pages()
         self.build_other_pages()
         self.build_error_pages()
-        
-        # Generate additional files
+        self.build_gallery_page()
+
+    def build_gallery_page(self):
+        """Build gallery page"""
+        with self.app.app_context():
+            with self.app.test_request_context():
+                gallery_images = self.get_gallery_images()
+                current_url = f"{self.app.jinja_env.globals['base_url']}/gallery/"
+                html = render_template("gallery.html", gallery_images=gallery_images, current_url=current_url, current_page="gallery")
+                self.save_page(html, "gallery/index.html")
         print("\n🔧 Generating additional files...")
         self.create_nojekyll_file()
         self.build_sitemap()

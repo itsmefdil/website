@@ -41,6 +41,19 @@
     <!-- Tailwind CSS -->
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 
+    <!-- Theme Script -->
+    <script>
+        // Prevent FOUC
+        (function () {
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
     <!-- Custom CSS -->
     {% block extra_css %}{% endblock %}
 
@@ -48,303 +61,258 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') }}">
 </head>
 
-<body class="bg-gray-900">
-    <!-- Navigation -->
-    <nav class="navbar fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-700/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-center items-center h-16 relative">
-                <!-- Logo - Positioned on the left -->
-                <div class="absolute left-0 flex items-center">
-                    <a href="{{ url_for('index') }}" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DevOps Jogja Logo"
-                                class="w-8 h-8 text-white">
-                        </div>
-                        <span class="font-bold text-xl text-white">DevOps Jogja</span>
-                    </a>
-                </div>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary">
 
-                <!-- Desktop Menu - Centered -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ url_for('index') }}" class="nav-link {% if current_page == 'index' %}active{% endif %}">
-                        Home
-                    </a>
-                    <a href="{{ url_for('blog_index') }}"
-                        class="nav-link {% if current_page and current_page.startswith('blog') %}active{% endif %}">
-                        Blog
-                    </a>
-                    <a href="{{ url_for('event_index') }}"
-                        class="nav-link {% if current_page and current_page.startswith('event') %}active{% endif %}">
-                        Event
-                    </a>
-                    <a href="{{ url_for('organizer') }}"
-                        class="nav-link {% if current_page == 'organizer' %}active{% endif %}">
-                        Organizer
-                    </a>
-                    <a href="{{ url_for('about') }}" class="nav-link {% if current_page == 'about' %}active{% endif %}">
-                        About
-                    </a>
-                </div>
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:block fixed top-0 inset-x-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+            <div class="relative flex items-center justify-center">
+                <!-- Logo -->
+                <a href="{{ url_for('index') }}" class="absolute left-0 flex items-center gap-2 group">
+                    <img src="{{ url_for('static', filename='images/dark.png') }}" alt="DevOps Jogja Logo"
+                        class="w-10 h-10 dark:hidden">
+                    <img src="{{ url_for('static', filename='images/light.png') }}" alt="DevOps Jogja Logo"
+                        class="w-10 h-10 hidden dark:block">
+                    <span class="font-bold text-xl tracking-tight hidden lg:block">DevOps Jogja</span>
+                </a>
 
-                <!-- GitHub Button - Positioned on the right -->
-                <div class="absolute right-0 hidden md:block">
-                    <a href="https://t.me/devopsjogja" target="_blank" class="tech-button">
+                <!-- Centered Pill Menu -->
+                <ul
+                    class="flex items-center space-x-1 rounded-full bg-background/60 backdrop-blur-md px-4 py-2 shadow-sm mx-auto">
+                    <li>
+                        <a href="{{ url_for('index') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'index' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('blog_index') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page and current_page.startswith('blog') %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Blog
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('event_index') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page and current_page.startswith('event') %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Event
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('gallery') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'gallery' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Gallery
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('organizer') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'organizer' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Organizer
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('about') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'about' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            About
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Right Actions -->
+                <div class="absolute right-0 flex items-center gap-2">
+                    <button id="theme-toggle"
+                        class="p-2 rounded-full hover:bg-white/40 dark:hover:bg-white/10 transition-colors text-muted-foreground hover:text-foreground">
+                        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </button>
+                    <a href="https://t.me/devopsjogja" target="_blank"
+                        class="inline-flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:shadow transition-all">
                         Join Community
                     </a>
                 </div>
-
-                <!-- Mobile menu button -->
-                <div class="absolute right-0 md:hidden flex items-center">
-                    <button id="mobile-menu-btn"
-                        class="text-gray-300 hover:text-white focus:outline-none focus:text-white">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-gray-900/90 backdrop-blur-md border-t border-gray-700/50">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="{{ url_for('index') }}"
-                    class="mobile-nav-link {% if current_page == 'index' %}text-blue-400{% endif %}">Home</a>
-                <a href="{{ url_for('blog_index') }}"
-                    class="mobile-nav-link {% if current_page and current_page.startswith('blog') %}text-blue-400{% endif %}">Blog</a>
-                <a href="{{ url_for('event_index') }}"
-                    class="mobile-nav-link {% if current_page and current_page.startswith('event') %}text-blue-400{% endif %}">Event</a>
-                <a href="{{ url_for('organizer') }}"
-                    class="mobile-nav-link {% if current_page == 'organizer' %}text-blue-400{% endif %}">Organizer</a>
-                <a href="{{ url_for('about') }}"
-                    class="mobile-nav-link {% if current_page == 'about' %}text-blue-400{% endif %}">About</a>
-                <a href="https://t.me/devopsjogja" target="_blank" class="mobile-nav-link">Join Telegram</a>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile Header -->
+    <div class="md:hidden fixed top-0 w-full z-50 px-4 py-4">
+        <div
+            class="flex items-center justify-between rounded-full border border-white/20 bg-white/60 dark:bg-black/50 backdrop-blur-xl p-3 shadow-lg">
+            <a href="{{ url_for('index') }}" class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo" class="w-8 h-8 dark:hidden">
+                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo"
+                    class="w-8 h-8 hidden dark:block">
+                <span class="font-bold text-lg tracking-tight">DevOps Jogja</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <button id="mobile-menu-btn" class="p-2 rounded-full hover:bg-muted text-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 z-[60] bg-background transform translate-x-full transition-transform duration-300 md:hidden flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo" class="w-8 h-8 dark:hidden">
+                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo"
+                    class="w-8 h-8 hidden dark:block">
+                <span class="font-bold text-lg">DevOps Jogja</span>
+            </div>
+            <button id="close-menu-btn" class="p-2 rounded-full hover:bg-muted">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <div class="p-4 space-y-4">
+            <a href="{{ url_for('index') }}" class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Home</a>
+            <a href="{{ url_for('blog_index') }}"
+                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Blog</a>
+            <a href="{{ url_for('event_index') }}"
+                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Event</a>
+            <a href="{{ url_for('gallery') }}"
+                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Gallery</a>
+            <a href="{{ url_for('organizer') }}"
+                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Organizer</a>
+            <a href="{{ url_for('about') }}" class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">About</a>
+        </div>
+        <div class="mt-auto p-4 border-t border-border space-y-4">
+            <a href="https://t.me/devopsjogja" target="_blank"
+                class="block w-full text-center rounded-lg bg-primary py-3 text-primary-foreground font-medium">
+                Join Community
+            </a>
+            <div class="flex justify-center">
+                <button id="mobile-theme-toggle"
+                    class="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+                    <span class="dark:hidden">Switch to Dark Mode</span>
+                    <span class="hidden dark:block">Switch to Light Mode</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main class="pt-16">
+    <main>
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer bg-gray-900 border-t border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Logo & Description -->
+    <footer class="border-t border-border bg-background pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-10 h-10  flex items-center justify-center">
-                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DevOps Jogja Logo"
-                                class="w-8 h-8 text-white">
-                        </div>
-                        <span class="font-bold text-xl text-white">DevOps Jogja</span>
-                    </div>
-                    <p class="text-gray-300 mb-4 max-w-md">
-                        Komunitas DevOps di Yogyakarta yang fokus pada pengembangan infrastruktur teknologi dan
-                        membangun komunitas yang solid.
+                    <a href="/" class="flex items-center gap-2 mb-4">
+                        <img src="{{ url_for('static', filename='images/light.png') }}" alt="DevOps Jogja"
+                            class="w-8 h-8 dark:hidden">
+                        <img src="{{ url_for('static', filename='images/dark.png') }}" alt="DevOps Jogja"
+                            class="w-8 h-8 hidden dark:block">
+                        <span class="font-bold text-xl">DevOps Jogja</span>
+                    </a>
+                    <p class="text-muted-foreground max-w-sm mb-6">
+                        Komunitas DevOps di Yogyakarta.
+                        Building Infrastructure, Building Community.
                     </p>
-                    <p class="text-blue-400 font-semibold">Building Infrastructure, Building Community 🚀</p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/devops-jogja"
+                            class="text-muted-foreground hover:text-foreground transition-colors">
+                            <span class="sr-only">GitHub</span>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="https://t.me/devopsjogja"
+                            class="text-muted-foreground hover:text-foreground transition-colors">
+                            <span class="sr-only">Telegram</span>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.29 7.71l-1.5 7.08c-.11.51-.4.63-.82.39l-2.25-1.67-1.09 1.04c-.12.12-.22.22-.45.22l.16-2.24 4.13-3.73c.18-.16-.04-.25-.28-.09l-5.11 3.22-2.2-.69c-.48-.15-.49-.48.1-.71l8.61-3.32c.4-.15.75.09.62.58z" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Quick Links -->
                 <div>
-                    <h3 class="font-semibold text-lg mb-4 text-white">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ url_for('index') }}"
-                                class="text-gray-300 hover:text-white transition-colors">Home</a></li>
-                        <li><a href="{{ url_for('blog_index') }}"
-                                class="text-gray-300 hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="{{ url_for('event_index') }}"
-                                class="text-gray-300 hover:text-white transition-colors">Event</a></li>
+                    <h3 class="font-semibold mb-4">Community</h3>
+                    <ul class="space-y-3 text-sm text-muted-foreground">
+                        <li><a href="{{ url_for('about') }}" class="hover:text-foreground transition-colors">About
+                                Us</a></li>
                         <li><a href="{{ url_for('organizer') }}"
-                                class="text-gray-300 hover:text-white transition-colors">Organizer</a></li>
-                        <li><a href="{{ url_for('about') }}"
-                                class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                                class="hover:text-foreground transition-colors">Organizers</a></li>
+                        <li><a href="{{ url_for('event_index') }}"
+                                class="hover:text-foreground transition-colors">Events</a></li>
                     </ul>
                 </div>
 
-                <!-- Contact -->
                 <div>
-                    <h3 class="font-semibold text-lg mb-4 text-white">Contact</h3>
-                    <ul class="space-y-2">
-                        <li class="text-gray-300">
-                            <span class="block">Email:</span>
-                            <a href="mailto:hello@devopsjogja.org"
-                                class="text-blue-400 hover:text-blue-300">devopsjogja@gmail.com</a>
-                        </li>
-                        <li class="text-gray-300">
-                            <span class="block">Telegram:</span>
-                            <a href="https://t.me/devopsjogja"
-                                class="text-blue-400 hover:text-blue-300">@devopsjogja</a>
-                        </li>
-                        <li class="text-gray-300">
-                            <span class="block">GitHub:</span>
-                            <a href="https://github.com/devops-jogja"
-                                class="text-blue-400 hover:text-blue-300">devops-jogja</a>
-                        </li>
+                    <h3 class="font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-3 text-sm text-muted-foreground">
+                        <li><a href="{{ url_for('blog_index') }}"
+                                class="hover:text-foreground transition-colors">Blog</a></li>
+                        <li><a href="https://github.com/devops-jogja"
+                                class="hover:text-foreground transition-colors">Open Source</a></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p class="text-gray-300">
-                    &copy; {{ "now"|date("%Y") }} DevOps Jogja Community. Made with ❤️ in Yogyakarta.
-                </p>
-                <p class="text-gray-300">
-                    Support by Hostinger.
-                </p>
+            <div
+                class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+                <p>&copy; {{ "now"|date("%Y") }} DevOps Jogja.</p>
+                <p>Made with ❤️ in Yogyakarta.</p>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMenu() {
+            if (mobileMenu.classList.contains('translate-x-full')) {
+                mobileMenu.classList.remove('translate-x-full');
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+
+        // Theme Toggle
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
+    </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
-
-    <!-- Custom Styles -->
-    <style>
-        /* Navbar Blur Glass Effect */
-        .navbar {
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(75, 85, 99, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .navbar:hover {
-            background: rgba(17, 24, 39, 0.95);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.1);
-        }
-
-        /* Smooth scroll offset for fixed navbar */
-        html {
-            scroll-padding-top: 4rem;
-        }
-
-        .nav-link {
-            @apply text-gray-300 font-medium transition-all duration-300 relative px-4 py-2 rounded-lg;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link.active {
-            @apply text-blue-400;
-        }
-
-        /* Hover background effect */
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
-            border-radius: 8px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: -1;
-        }
-
-        /* Underline effect */
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            transform: translateX(-50%);
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-link:hover {
-            @apply text-white;
-            transform: translateY(-1px);
-        }
-
-        .nav-link:hover::before {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 80%;
-        }
-
-        .nav-link.active::after {
-            width: 80%;
-        }
-
-        .mobile-nav-link {
-            @apply block px-3 py-3 text-gray-300 font-medium transition-all duration-300 rounded-lg mx-2 relative;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
-            border-radius: 8px;
-            opacity: 0;
-            transform: translateX(-100%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: -1;
-        }
-
-        .mobile-nav-link:hover {
-            @apply text-white;
-            transform: translateX(4px);
-        }
-
-        .mobile-nav-link:hover::before {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Logo glow effect */
-        .navbar .flex.items-center img {
-            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
-            transition: filter 0.3s ease;
-        }
-
-        .navbar .flex.items-center:hover img {
-            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
-        }
-
-        /* Tech button enhancement for navbar */
-        .tech-button {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium py-2 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl;
-            background-size: 200% 200%;
-            animation: gradient-shift 3s ease infinite;
-        }
-
-        @keyframes gradient-shift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-    </style>
 </body>
 
 </html>

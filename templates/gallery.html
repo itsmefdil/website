@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery - DevOps Jogja Community{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="pt-32 pb-24 bg-background border-b border-border relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid-pattern"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div
+            class="inline-flex items-center justify-center p-2 bg-muted rounded-full mb-4 animate-in fade-in zoom-in duration-500">
+            <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Captured
+                Moments</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            Community <span class="text-primary">Gallery</span>
+        </h1>
+        <p
+            class="text-xl text-muted-foreground max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700">
+            Kumpulan momen berharga dari berbagai event, meetup, dan workshop DevOps Jogja.
+        </p>
+    </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="py-16 bg-background min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if gallery_images %}
+        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+            {% for image in gallery_images %}
+            <div class="break-inside-avoid group relative rounded-xl overflow-hidden cursor-pointer"
+                onclick="openLightbox('{{ url_for('static', filename=image.path) }}', '{{ image.alt }}')"
+                style="animation: fadeIn 0.5s ease-out forwards; animation-delay: {{ loop.index0 * 50 }}ms; opacity: 0;">
+
+                <!-- Image -->
+                <img src="{{ url_for('static', filename=image.path) }}" alt="{{ image.alt }}"
+                    class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy">
+
+                <!-- Hover Overlay -->
+                <div
+                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <p class="text-white font-medium text-sm truncate">{{ image.alt }}</p>
+                        <p class="text-white/70 text-xs mt-1">Click to view</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div
+            class="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500">
+            <div class="bg-muted p-6 rounded-full mb-6">
+                <svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">No Images Yet</h3>
+            <p class="text-muted-foreground max-w-md">
+                We haven't uploaded any photos to the gallery yet. Stay tuned for updates from our upcoming events!
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox"
+    class="fixed inset-0 z-[100] bg-black/95 hidden flex items-center justify-center opacity-0 transition-opacity duration-300"
+    onclick="closeLightbox(event)">
+
+    <!-- Close Button -->
+    <button class="absolute top-4 right-4 z-50 p-2 text-white/70 hover:text-white transition-colors"
+        onclick="closeLightbox(null)">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+
+    <!-- Navigation Buttons -->
+    <button
+        class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full transition-all opacity-0 hover:opacity-100 group-hover:opacity-100 hidden md:block"
+        id="prevBtn" onclick="navigate(-1, event)">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+    </button>
+    <button
+        class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full transition-all opacity-0 hover:opacity-100 group-hover:opacity-100 hidden md:block"
+        id="nextBtn" onclick="navigate(1, event)">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+    </button>
+
+    <!-- Image Container -->
+    <div class="relative max-w-7xl max-h-[90vh] p-4">
+        <img id="lightbox-img" src="" alt="Gallery Image"
+            class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transform scale-95 transition-transform duration-300">
+        <p id="lightbox-caption" class="text-center text-white/90 mt-4 text-lg font-medium"></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Gallery Data for Navigation
+    const galleryItems = [
+        {% for image in gallery_images %}
+    {
+        src: "{{ url_for('static', filename=image.path) }}",
+            alt: "{{ image.alt }}"
+    },
+    {% endfor %}
+    ];
+
+    let currentIndex = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+
+    function openLightbox(src, alt) {
+        // Find index
+        currentIndex = galleryItems.findIndex(item => item.src === src);
+        updateLightboxContent();
+
+        lightbox.classList.remove('hidden');
+        // Small delay to allow display:flex to apply before adding opacity
+        requestAnimationFrame(() => {
+            lightbox.classList.remove('opacity-0');
+            lightboxImg.classList.remove('scale-95');
+            lightboxImg.classList.add('scale-100');
+        });
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeLightbox(e) {
+        // If e is null (close button) or target is the background
+        if (!e || e.target === lightbox) {
+            lightbox.classList.add('opacity-0');
+            lightboxImg.classList.remove('scale-100');
+            lightboxImg.classList.add('scale-95');
+
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    function navigate(direction, e) {
+        e.stopPropagation(); // Prevent closing
+        currentIndex = (currentIndex + direction + galleryItems.length) % galleryItems.length;
+
+        // Fade out slightly
+        lightboxImg.style.opacity = '0.5';
+
+        setTimeout(() => {
+            updateLightboxContent();
+            lightboxImg.style.opacity = '1';
+        }, 150);
+    }
+
+    function updateLightboxContent() {
+        const item = galleryItems[currentIndex];
+        lightboxImg.src = item.src;
+        lightboxImg.alt = item.alt;
+        lightboxCaption.textContent = item.alt;
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') closeLightbox(null);
+        if (e.key === 'ArrowLeft') navigate(-1, { stopPropagation: () => { } });
+        if (e.key === 'ArrowRight') navigate(1, { stopPropagation: () => { } });
+    });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Hide scrollbar for gallery but keep functionality */
+    .gallery-scroll::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+</style>
+{% endblock %}
