@@ -148,211 +148,107 @@
     </nav>
 
     <!-- Mobile Header -->
-    <div class="md:hidden fixed top-0 w-full z-50 px-4 py-4">
-        <div
-            class="flex items-center justify-between rounded-full border border-white/20 bg-white/60 dark:bg-black/50 backdrop-blur-xl p-3 shadow-lg">
+    <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-md border-b border-border/50">
+        <div class="flex items-center justify-between px-4 py-3">
+            <!-- Logo -->
             <a href="{{ url_for('index') }}" class="flex items-center gap-2">
-                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo" class="w-8 h-8 dark:hidden">
-                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo"
+                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo" class="w-8 h-8 dark:hidden">
+                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo"
                     class="w-8 h-8 hidden dark:block">
-                <span class="font-bold text-lg tracking-tight">DevOps Jogja</span>
+                <span class="font-bold text-lg">DevOps Jogja</span>
             </a>
+
+            <!-- Right Actions -->
             <div class="flex items-center gap-2">
-                <button id="mobile-menu-btn" class="p-2 rounded-full hover:bg-muted text-foreground">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Theme Toggle -->
+                <button id="mobile-theme-toggle-btn" class="p-2 rounded-lg hover:bg-muted transition-colors">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
                     </svg>
                 </button>
+
+                <!-- About Button -->
+                <a href="{{ url_for('about') }}"
+                    class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors {% if current_page == 'about' %}bg-primary/10 text-primary{% else %}text-foreground hover:bg-muted{% endif %}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>About</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu"
-        class="fixed inset-0 z-[60] bg-black/95 dark:bg-black/98 backdrop-blur-xl transform translate-x-full transition-all duration-500 ease-out md:hidden flex flex-col">
-        <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-white/10">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo" class="w-10 h-10 dark:hidden">
-                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo"
-                    class="w-10 h-10 hidden dark:block">
-                <span class="font-bold text-xl tracking-tight">DevOps Jogja</span>
-            </div>
-            <button id="close-menu-btn"
-                class="p-2.5 rounded-full hover:bg-white/10 transition-all duration-200 active:scale-95">
+    <!-- Mobile Bottom Navigation -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-md border-t border-border shadow-sm">
+        <div class="flex items-center justify-around px-2 py-2">
+            <!-- Blog -->
+            <a href="{{ url_for('blog_index') }}"
+                class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 {% if current_page and current_page.startswith('blog') %}text-primary bg-primary/10{% else %}text-muted-foreground hover:text-foreground hover:bg-muted{% endif %}">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
                     </path>
                 </svg>
-            </button>
-        </div>
+                <span class="text-xs font-medium">Blog</span>
+            </a>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 overflow-y-auto px-6 py-8">
-            <div class="space-y-2">
-                <a href="{{ url_for('index') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'index' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Home</span>
-                    {% if current_page == 'index' %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('blog_index') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page and current_page.startswith('blog') %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Blog</span>
-                    {% if current_page and current_page.startswith('blog') %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('event_index') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page and current_page.startswith('event') %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Event</span>
-                    {% if current_page and current_page.startswith('event') %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('schedule') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'schedule' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Schedule</span>
-                    {% if current_page == 'schedule' %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('gallery') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'gallery' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Gallery</span>
-                    {% if current_page == 'gallery' %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('organizer') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'organizer' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>Organizer</span>
-                    {% if current_page == 'organizer' %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-
-                <a href="{{ url_for('about') }}"
-                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'about' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
-                    <span>About</span>
-                    {% if current_page == 'about' %}
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    {% endif %}
-                </a>
-            </div>
-        </nav>
-
-        <!-- Footer Actions -->
-        <div class="p-6 border-t border-white/10 space-y-4 bg-gradient-to-t from-black/50">
-            <!-- Theme Toggle -->
-            <button id="mobile-theme-toggle"
-                class="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200 group">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-lg bg-primary/20 text-primary">
-                        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                            </path>
-                        </svg>
-                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <span class="font-medium dark:hidden">Dark Mode</span>
-                    <span class="font-medium hidden dark:block">Light Mode</span>
-                </div>
-                <svg class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <!-- Event -->
+            <a href="{{ url_for('event_index') }}"
+                class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 {% if current_page and current_page.startswith('event') %}text-primary bg-primary/10{% else %}text-muted-foreground hover:text-foreground hover:bg-muted{% endif %}">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
                 </svg>
-            </button>
+                <span class="text-xs font-medium">Event</span>
+            </a>
 
-            <!-- Join Community Button -->
-            <a href="https://t.me/devopsjogja" target="_blank"
-                class="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 py-4 text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.29 7.71l-1.5 7.08c-.11.51-.4.63-.82.39l-2.25-1.67-1.09 1.04c-.12.12-.22.22-.45.22l.16-2.24 4.13-3.73c.18-.16-.04-.25-.28-.09l-5.11 3.22-2.2-.69c-.48-.15-.49-.48.1-.71l8.61-3.32c.4-.15.75.09.62.58z" />
+            <!-- Schedule -->
+            <a href="{{ url_for('schedule') }}"
+                class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 {% if current_page == 'schedule' %}text-primary bg-primary/10{% else %}text-muted-foreground hover:text-foreground hover:bg-muted{% endif %}">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span>Join Community</span>
+                <span class="text-xs font-medium">Schedule</span>
+            </a>
+
+            <!-- Gallery -->
+            <a href="{{ url_for('gallery') }}"
+                class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 {% if current_page == 'gallery' %}text-primary bg-primary/10{% else %}text-muted-foreground hover:text-foreground hover:bg-muted{% endif %}">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <span class="text-xs font-medium">Gallery</span>
+            </a>
+
+            <!-- Organizer -->
+            <a href="{{ url_for('organizer') }}"
+                class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 {% if current_page == 'organizer' %}text-primary bg-primary/10{% else %}text-muted-foreground hover:text-foreground hover:bg-muted{% endif %}">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
+                </svg>
+                <span class="text-xs font-medium">Organizer</span>
             </a>
         </div>
-    </div>
+    </nav>
 
     <!-- Main Content -->
-    <main>
+    <main class="pb-20 md:pb-0">
         {% block content %}{% endblock %}
     </main>
 
@@ -362,9 +258,9 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div class="col-span-1 md:col-span-2">
                     <a href="/" class="flex items-center gap-2 mb-4">
-                        <img src="{{ url_for('static', filename='images/light.png') }}" alt="DevOps Jogja"
-                            class="w-8 h-8 dark:hidden">
                         <img src="{{ url_for('static', filename='images/dark.png') }}" alt="DevOps Jogja"
+                            class="w-8 h-8 dark:hidden">
+                        <img src="{{ url_for('static', filename='images/light.png') }}" alt="DevOps Jogja"
                             class="w-8 h-8 hidden dark:block">
                         <span class="font-bold text-xl">DevOps Jogja</span>
                     </a>
@@ -426,81 +322,6 @@
 
     <!-- JavaScript -->
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const closeMenuBtn = document.getElementById('close-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
-
-        console.log('Mobile Menu Elements:', {
-            mobileMenuBtn,
-            closeMenuBtn,
-            mobileMenu,
-            linksCount: mobileMenuLinks.length
-        });
-
-        function openMenu() {
-            console.log('Opening menu...');
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-            console.log('Menu classes after open:', mobileMenu.className);
-        }
-
-        function closeMenu() {
-            console.log('Closing menu...');
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-            console.log('Menu classes after close:', mobileMenu.className);
-        }
-
-        function toggleMenu() {
-            console.log('Toggle menu clicked, current classes:', mobileMenu.className);
-            if (mobileMenu.classList.contains('translate-x-full')) {
-                openMenu();
-            } else {
-                closeMenu();
-            }
-        }
-
-        // Event listeners with null checks
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', (e) => {
-                console.log('Menu button clicked');
-                toggleMenu();
-            });
-        } else {
-            console.error('Mobile menu button not found!');
-        }
-
-        if (closeMenuBtn) {
-            closeMenuBtn.addEventListener('click', closeMenu);
-        }
-
-        // Close menu when clicking on a link
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                setTimeout(closeMenu, 150);
-            });
-        });
-
-        // Close menu when clicking outside
-        if (mobileMenu) {
-            mobileMenu.addEventListener('click', (e) => {
-                if (e.target === mobileMenu) {
-                    closeMenu();
-                }
-            });
-        }
-
-        // Close menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('translate-x-full')) {
-                closeMenu();
-            }
-        });
-
         // Theme Toggle
         function toggleTheme() {
             if (document.documentElement.classList.contains('dark')) {
@@ -513,13 +334,13 @@
         }
 
         const themeToggle = document.getElementById('theme-toggle');
-        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle-btn');
 
         if (themeToggle) {
             themeToggle.addEventListener('click', toggleTheme);
         }
-        if (mobileThemeToggle) {
-            mobileThemeToggle.addEventListener('click', toggleTheme);
+        if (mobileThemeToggleBtn) {
+            mobileThemeToggleBtn.addEventListener('click', toggleTheme);
         }
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

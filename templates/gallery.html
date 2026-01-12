@@ -129,18 +129,99 @@
 <script src="https://unpkg.com/mustache@latest"></script>
 
 <script>
+    // Cache configuration
+    const CACHE_KEY = 'devops_jogja_gallery';
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
     let galleryItems = [];
     let currentIndex = 0;
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxCaption = document.getElementById('lightbox-caption');
 
-    // Intercept the HTMX response to store items
+    // Function to get cached data
+    function getCachedData() {
+        try {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return null;
+
+            const { data, timestamp } = JSON.parse(cached);
+            const now = Date.now();
+
+            // Check if cache is still valid
+            if (now - timestamp < CACHE_TTL) {
+                console.log('Using cached gallery data (age: ' + Math.round((now - timestamp) / 1000) + 's)');
+                return data;
+            } else {
+                console.log('Cache expired, will fetch fresh data');
+                localStorage.removeItem(CACHE_KEY);
+                return null;
+            }
+        } catch (e) {
+            console.error('Error reading cache:', e);
+            return null;
+        }
+    }
+
+    // Function to set cached data
+    function setCachedData(data) {
+        try {
+            const cacheObject = {
+                data: data,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cacheObject));
+            console.log('Gallery data cached successfully');
+        } catch (e) {
+            console.error('Error setting cache:', e);
+        }
+    }
+
+    // Check cache before HTMX request
+    document.addEventListener('DOMContentLoaded', function () {
+        const cachedData = getCachedData();
+
+        if (cachedData && cachedData.length > 0) {
+            // Use cached data
+            const template = document.getElementById('gallery-template').innerHTML;
+            const rendered = Mustache.render(template, cachedData);
+            document.getElementById('gallery-grid').innerHTML = rendered;
+
+            // Store items for lightbox
+            galleryItems = cachedData.map(item => {
+                let fullSrc = item.thumbnailLink;
+                if (fullSrc && fullSrc.includes('=s')) {
+                    fullSrc = fullSrc.split('=s')[0] + '=s1600';
+                } else if (fullSrc && fullSrc.includes('=w')) {
+                    fullSrc = fullSrc.split('=w')[0] + '=s1600';
+                }
+
+                return {
+                    src: fullSrc || item.webContentLink,
+                    thumb: item.thumbnailLink,
+                    alt: item.name,
+                    id: item.id
+                };
+            });
+
+            // Cancel HTMX request since we have cached data
+            const wrapper = document.getElementById('gallery-wrapper');
+            wrapper.removeAttribute('hx-get');
+            wrapper.removeAttribute('hx-trigger');
+        }
+        // If no cache, HTMX will proceed with the request
+    });
+
+    // Intercept the HTMX response to store items and cache
     document.addEventListener('htmx:afterRequest', function (evt) {
         if (evt.target.id === 'gallery-wrapper') {
             if (evt.detail.successful) {
                 try {
                     const data = JSON.parse(evt.detail.xhr.responseText);
+
+                    // Cache the response
+                    setCachedData(data);
+
                     galleryItems = data.map(item => {
                         // Use thumbnailLink but replace size parameter for lightbox
                         // Change =s220 or similar to =s1600 for better quality
@@ -158,7 +239,7 @@
                             id: item.id
                         };
                     });
-                    console.log('Gallery data loaded successfully with high-res thumbnails');
+                    console.log('Gallery data loaded and cached successfully');
                 } catch (e) {
                     console.error('Failed to parse gallery JSON:', e);
                 }
