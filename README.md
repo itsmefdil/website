@@ -2,14 +2,14 @@
 
 Website komunitas modern untuk DevOps Jogja yang dibangun dengan Flask dan Tailwind CSS.
 
-![DevOps Jogja](static/images/cover.png)
 
 ## 🚀 Fitur
 
 - **Modern Homepage** - Kesan teknologi infrastruktur dengan design responsif
 - **Blog System** - Artikel dan blog teknologi dari file Markdown
-- **Event Management** - Informasi event dari file Markdown
+- **Event Management** - Informasi event dari file Markdown & integrasi Google Calendar
 - **Organizer Profiles** - Profil pengurus dari file YAML
+- **Community Calendar** - Sinkronisasi jadwal otomatis dengan Google Calendar
 - **About Page** - Informasi komunitas dari file YAML
 - **Responsive Design** - Menggunakan Tailwind CSS
 
@@ -85,7 +85,10 @@ devops-jogja-website/
 │   │   ├── index.html    # Event listing
 │   │   └── event.html    # Event detail
 │   ├── organizer.html    # Organizer page
-│   └── about.html        # About page
+│   ├── schedule.html     # Community Calendar schedule page
+│   ├── about.html        # About page
+│   ├── gallery.html      # Gallery page
+│   └── 404.html          # Error page
 ├── content/
 │   ├── blog/             # Blog posts (Markdown)
 │   ├── event/            # Events (Markdown)
@@ -132,6 +135,10 @@ featured_image: "event-image.jpg"
 ---
 
 Deskripsi event Anda di sini...
+
+### Community Calendar
+
+Halaman schedule (`/schedule`) menggunakan integrasi Google Calendar API (via backend proxy) untuk menampilkan jadwal terbaru secara real-time. Link subscribe tersedia di bagian bawah halaman untuk memudahkan user menambahkan kalender ke akun Google mereka.
 ```
 
 ### Organizer Data
