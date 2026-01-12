@@ -98,6 +98,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ url_for('schedule') }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'schedule' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
+                            Schedule
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('gallery') }}"
                             class="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-muted hover:text-foreground {% if current_page == 'gallery' %}bg-muted text-foreground font-semibold{% else %}text-muted-foreground{% endif %}">
                             Gallery
@@ -164,45 +170,184 @@
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu"
-        class="fixed inset-0 z-[60] bg-background transform translate-x-full transition-transform duration-300 md:hidden flex flex-col">
-        <div class="flex items-center justify-between p-4 border-b border-border">
-            <div class="flex items-center gap-2">
-                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo" class="w-8 h-8 dark:hidden">
-                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo"
-                    class="w-8 h-8 hidden dark:block">
-                <span class="font-bold text-lg">DevOps Jogja</span>
+        class="fixed inset-0 z-[60] bg-black/95 dark:bg-black/98 backdrop-blur-xl transform translate-x-full transition-all duration-500 ease-out md:hidden flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-white/10">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Logo" class="w-10 h-10 dark:hidden">
+                <img src="{{ url_for('static', filename='images/light.png') }}" alt="Logo"
+                    class="w-10 h-10 hidden dark:block">
+                <span class="font-bold text-xl tracking-tight">DevOps Jogja</span>
             </div>
-            <button id="close-menu-btn" class="p-2 rounded-full hover:bg-muted">
+            <button id="close-menu-btn"
+                class="p-2.5 rounded-full hover:bg-white/10 transition-all duration-200 active:scale-95">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                     </path>
                 </svg>
             </button>
         </div>
-        <div class="p-4 space-y-4">
-            <a href="{{ url_for('index') }}" class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Home</a>
-            <a href="{{ url_for('blog_index') }}"
-                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Blog</a>
-            <a href="{{ url_for('event_index') }}"
-                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Event</a>
-            <a href="{{ url_for('gallery') }}"
-                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Gallery</a>
-            <a href="{{ url_for('organizer') }}"
-                class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Organizer</a>
-            <a href="{{ url_for('about') }}" class="block p-3 rounded-lg hover:bg-muted text-lg font-medium">About</a>
-        </div>
-        <div class="mt-auto p-4 border-t border-border space-y-4">
-            <a href="https://t.me/devopsjogja" target="_blank"
-                class="block w-full text-center rounded-lg bg-primary py-3 text-primary-foreground font-medium">
-                Join Community
-            </a>
-            <div class="flex justify-center">
-                <button id="mobile-theme-toggle"
-                    class="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
-                    <span class="dark:hidden">Switch to Dark Mode</span>
-                    <span class="hidden dark:block">Switch to Light Mode</span>
-                </button>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto px-6 py-8">
+            <div class="space-y-2">
+                <a href="{{ url_for('index') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'index' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Home</span>
+                    {% if current_page == 'index' %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('blog_index') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page and current_page.startswith('blog') %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Blog</span>
+                    {% if current_page and current_page.startswith('blog') %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('event_index') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page and current_page.startswith('event') %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Event</span>
+                    {% if current_page and current_page.startswith('event') %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('schedule') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'schedule' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Schedule</span>
+                    {% if current_page == 'schedule' %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('gallery') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'gallery' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Gallery</span>
+                    {% if current_page == 'gallery' %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('organizer') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'organizer' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>Organizer</span>
+                    {% if current_page == 'organizer' %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('about') }}"
+                    class="mobile-menu-link group flex items-center justify-between p-4 rounded-xl text-lg font-medium transition-all duration-200 {% if current_page == 'about' %}bg-primary/20 text-primary border border-primary/30{% else %}text-foreground hover:bg-white/5 hover:text-primary{% endif %}">
+                    <span>About</span>
+                    {% if current_page == 'about' %}
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {% endif %}
+                </a>
             </div>
+        </nav>
+
+        <!-- Footer Actions -->
+        <div class="p-6 border-t border-white/10 space-y-4 bg-gradient-to-t from-black/50">
+            <!-- Theme Toggle -->
+            <button id="mobile-theme-toggle"
+                class="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200 group">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-lg bg-primary/20 text-primary">
+                        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <span class="font-medium dark:hidden">Dark Mode</span>
+                    <span class="font-medium hidden dark:block">Light Mode</span>
+                </div>
+                <svg class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            <!-- Join Community Button -->
+            <a href="https://t.me/devopsjogja" target="_blank"
+                class="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 py-4 text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.29 7.71l-1.5 7.08c-.11.51-.4.63-.82.39l-2.25-1.67-1.09 1.04c-.12.12-.22.22-.45.22l.16-2.24 4.13-3.73c.18-.16-.04-.25-.28-.09l-5.11 3.22-2.2-.69c-.48-.15-.49-.48.1-.71l8.61-3.32c.4-.15.75.09.62.58z" />
+                </svg>
+                <span>Join Community</span>
+            </a>
         </div>
     </div>
 
@@ -285,17 +430,76 @@
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const closeMenuBtn = document.getElementById('close-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        console.log('Mobile Menu Elements:', {
+            mobileMenuBtn,
+            closeMenuBtn,
+            mobileMenu,
+            linksCount: mobileMenuLinks.length
+        });
+
+        function openMenu() {
+            console.log('Opening menu...');
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+            console.log('Menu classes after open:', mobileMenu.className);
+        }
+
+        function closeMenu() {
+            console.log('Closing menu...');
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+            console.log('Menu classes after close:', mobileMenu.className);
+        }
 
         function toggleMenu() {
+            console.log('Toggle menu clicked, current classes:', mobileMenu.className);
             if (mobileMenu.classList.contains('translate-x-full')) {
-                mobileMenu.classList.remove('translate-x-full');
+                openMenu();
             } else {
-                mobileMenu.classList.add('translate-x-full');
+                closeMenu();
             }
         }
 
-        mobileMenuBtn.addEventListener('click', toggleMenu);
-        closeMenuBtn.addEventListener('click', toggleMenu);
+        // Event listeners with null checks
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                console.log('Menu button clicked');
+                toggleMenu();
+            });
+        } else {
+            console.error('Mobile menu button not found!');
+        }
+
+        if (closeMenuBtn) {
+            closeMenuBtn.addEventListener('click', closeMenu);
+        }
+
+        // Close menu when clicking on a link
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(closeMenu, 150);
+            });
+        });
+
+        // Close menu when clicking outside
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target === mobileMenu) {
+                    closeMenu();
+                }
+            });
+        }
+
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('translate-x-full')) {
+                closeMenu();
+            }
+        });
 
         // Theme Toggle
         function toggleTheme() {
@@ -308,8 +512,15 @@
             }
         }
 
-        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-        document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
+        const themeToggle = document.getElementById('theme-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', toggleTheme);
+        }
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
