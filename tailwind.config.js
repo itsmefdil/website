@@ -7,7 +7,22 @@ module.exports = {
     ],
     safelist: [
         'translate-x-0',
-        'overflow-hidden'
+        'overflow-hidden',
+        // Schedule Page Dynamic Classes
+        'md:flex-row',
+        'md:w-1/2',
+        'space-y-16',
+        'space-y-8',
+        'relative',
+        'flex',
+        'flex-col',
+        'top-8',
+        'right-1/2',
+        'left-1/2',
+        'group-hover:scale-150',
+        'group-hover:bg-primary/50',
+        'group-hover:-translate-y-1',
+        'group-hover:shadow-xl'
     ],
     theme: {
         extend: {
