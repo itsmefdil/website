@@ -412,7 +412,7 @@ class StaticSiteBuilder:
             with self.app.test_request_context():
                 # For static site, we need the public API URL that the browser can access
                 # Default to localhost for dev, but this should be configured for prod
-                api_url = os.environ.get("API_URL", "http://localhost:3999/events")
+                api_url = "https://devops-jogja-calendar.vercel.app/events"
                 
                 current_url = f"{self.app.jinja_env.globals['base_url']}/schedule/"
                 html = render_template(

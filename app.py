@@ -273,7 +273,7 @@ def schedule():
     """Schedule page with client-side fetching"""
     # Pass API URL to template for client-side fetching
     # Use public URL if available, otherwise fallback to local default
-    api_url = os.environ.get("API_URL", "http://localhost:3999/events")
+    api_url = "https://devops-jogja-calendar.vercel.app/events"
     
     return render_template(
         "schedule.html",
