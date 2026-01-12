@@ -5,6 +5,10 @@ module.exports = {
         "./templates/**/*.html",
         "./static/js/**/*.js"
     ],
+    safelist: [
+        'translate-x-0',
+        'overflow-hidden'
+    ],
     theme: {
         extend: {
             colors: {

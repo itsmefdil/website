@@ -268,6 +268,20 @@ def gallery():
     )
 
 
+@app.route("/schedule")
+def schedule():
+    """Schedule page with client-side fetching"""
+    # Pass API URL to template for client-side fetching
+    # Use public URL if available, otherwise fallback to local default
+    api_url = "https://devops-jogja-calendar.vercel.app/events"
+    
+    return render_template(
+        "schedule.html",
+        api_url=api_url,
+        current_page="schedule"
+    )
+
+
 
 @app.errorhandler(404)
 def not_found(error):

@@ -73,6 +73,57 @@
     </div>
 </section>
 
+<!-- Sponsors Section -->
+{% if sponsors %}
+<section class="py-12 border-b border-border bg-background">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
+        <h2 class="text-xl font-semibold text-muted-foreground uppercase tracking-widest">Supported By</h2>
+    </div>
+
+    <div class="relative flex overflow-x-hidden group">
+        <div class="animate-marquee whitespace-nowrap flex items-center gap-12 px-6">
+            {% for sponsor in sponsors %}
+            <a href="{{ sponsor.url }}" target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100 transform hover:scale-110">
+                <img src="{{ url_for('static', filename='images/sponsor/' + (sponsor.logo | get_image('sponsor'))) }}"
+                    alt="{{ sponsor.name }}" class="h-12 w-auto max-w-[150px] object-contain">
+            </a>
+            {% endfor %}
+            <!-- Duplicate for seamless loop -->
+            {% for sponsor in sponsors %}
+            <a href="{{ sponsor.url }}" target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100 transform hover:scale-110">
+                <img src="{{ url_for('static', filename='images/sponsor/' + (sponsor.logo | get_image('sponsor'))) }}"
+                    alt="{{ sponsor.name }}" class="h-12 w-auto max-w-[150px] object-contain">
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center gap-12 px-6">
+            {% for sponsor in sponsors %}
+            <a href="{{ sponsor.url }}" target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100 transform hover:scale-110">
+                <img src="{{ url_for('static', filename='images/sponsor/' + (sponsor.logo | get_image('sponsor'))) }}"
+                    alt="{{ sponsor.name }}" class="h-12 w-auto max-w-[150px] object-contain">
+            </a>
+            {% endfor %}
+            <!-- Duplicate for seamless loop -->
+            {% for sponsor in sponsors %}
+            <a href="{{ sponsor.url }}" target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100 transform hover:scale-110">
+                <img src="{{ url_for('static', filename='images/sponsor/' + (sponsor.logo | get_image('sponsor'))) }}"
+                    alt="{{ sponsor.name }}" class="h-12 w-auto max-w-[150px] object-contain">
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Gradient Masks -->
+        <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10"></div>
+        <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10"></div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Latest Events -->
 {% if latest_events %}
 <section class="py-24 bg-background">

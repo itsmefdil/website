@@ -61,6 +61,8 @@ class StaticSiteBuilder:
                 return '/about/'
             elif endpoint == 'organizer':
                 return '/organizer/'
+            elif endpoint == 'schedule':
+                return '/schedule/'
             elif endpoint == 'blog_post':
                 slug = values.get('slug', '')
                 return f'/blog/{slug}/'
@@ -342,7 +344,9 @@ class StaticSiteBuilder:
             {"url": "/event/", "priority": "0.8"},
             {"url": "/about/", "priority": "0.6"},
             {"url": "/organizer/", "priority": "0.6"},
+            {"url": "/organizer/", "priority": "0.6"},
             {"url": "/gallery/", "priority": "0.6"},
+            {"url": "/schedule/", "priority": "0.8"},
         ]
         
         # Add blog posts
@@ -400,6 +404,24 @@ class StaticSiteBuilder:
         self.build_other_pages()
         self.build_error_pages()
         self.build_gallery_page()
+        self.build_schedule_page()
+
+    def build_schedule_page(self):
+        """Build schedule page with client-side fetching configuration"""
+        with self.app.app_context():
+            with self.app.test_request_context():
+                # For static site, we need the public API URL that the browser can access
+                # Default to localhost for dev, but this should be configured for prod
+                api_url = "https://devops-jogja-calendar.vercel.app/events"
+                
+                current_url = f"{self.app.jinja_env.globals['base_url']}/schedule/"
+                html = render_template(
+                    "schedule.html", 
+                    api_url=api_url,
+                    current_url=current_url, 
+                    current_page="schedule"
+                )
+                self.save_page(html, "schedule/index.html")
 
     def build_gallery_page(self):
         """Build gallery page"""
