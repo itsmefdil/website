@@ -25,17 +25,30 @@
 </section>
 
 <!-- Gallery Grid -->
-<section class="py-16 bg-background min-h-screen">
+<section class="py-16 bg-background min-h-screen" hx-ext="client-side-templates">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {% if gallery_images %}
-        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-            {% for image in gallery_images %}
+        <!-- Remote Gallery Container -->
+        <div id="gallery-wrapper" hx-get="{{ gallery_api_url }}" hx-trigger="load" hx-target="#gallery-grid"
+            mustache-template="gallery-template">
+
+            <div id="gallery-grid" class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+                <!-- Data will be injected here by HTMX + Mustache -->
+                <div class="col-span-full flex justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mustache Template for Gallery -->
+        <template id="gallery-template">
+            {% raw %}
+            {{#.}}
             <div class="break-inside-avoid group relative rounded-xl overflow-hidden cursor-pointer"
-                onclick="openLightbox('{{ url_for('static', filename=image.path) }}', '{{ image.alt }}')"
-                style="animation: fadeIn 0.5s ease-out forwards; animation-delay: {{ loop.index0 * 50 }}ms; opacity: 0;">
+                data-src="{{webContentLink}}" data-name="{{name}}" data-id="{{id}}" onclick="openLightbox(this)"
+                style="animation: fadeIn 0.5s ease-out forwards; opacity: 0;">
 
                 <!-- Image -->
-                <img src="{{ url_for('static', filename=image.path) }}" alt="{{ image.alt }}"
+                <img src="{{thumbnailLink}}" alt="{{name}}"
                     class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-110"
                     loading="lazy">
 
@@ -43,30 +56,31 @@
                 <div
                     class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <p class="text-white font-medium text-sm truncate">{{ image.alt }}</p>
+                        <p class="text-white font-medium text-sm truncate">{{name}}</p>
                         <p class="text-white/70 text-xs mt-1">Click to view</p>
                     </div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <!-- Empty State -->
-        <div
-            class="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500">
-            <div class="bg-muted p-6 rounded-full mb-6">
-                <svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
+            {{/.}}
+            {{^.}}
+            <!-- Empty State -->
+            <div
+                class="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500 col-span-full">
+                <div class="bg-muted p-6 rounded-full mb-6">
+                    <svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">No Images Found</h3>
+                <p class="text-muted-foreground max-w-md">
+                    We couldn't retrieve any photos from the remote gallery at this time.
+                </p>
             </div>
-            <h3 class="text-xl font-semibold mb-2">No Images Yet</h3>
-            <p class="text-muted-foreground max-w-md">
-                We haven't uploaded any photos to the gallery yet. Stay tuned for updates from our upcoming events!
-            </p>
-        </div>
-        {% endif %}
+            {{/.}}
+            {% endraw %}
+        </template>
     </div>
 </section>
 
@@ -110,39 +124,76 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    // Gallery Data for Navigation
-    const galleryItems = [
-        {% for image in gallery_images %}
-    {
-        src: "{{ url_for('static', filename=image.path) }}",
-            alt: "{{ image.alt }}"
-    },
-    {% endfor %}
-    ];
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
+<script src="https://unpkg.com/mustache@latest"></script>
 
+<script>
+    let galleryItems = [];
     let currentIndex = 0;
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxCaption = document.getElementById('lightbox-caption');
 
-    function openLightbox(src, alt) {
-        // Find index
-        currentIndex = galleryItems.findIndex(item => item.src === src);
+    // Intercept the HTMX response to store items
+    document.addEventListener('htmx:afterRequest', function (evt) {
+        if (evt.target.id === 'gallery-wrapper') {
+            if (evt.detail.successful) {
+                try {
+                    const data = JSON.parse(evt.detail.xhr.responseText);
+                    galleryItems = data.map(item => {
+                        // Use thumbnailLink but replace size parameter for lightbox
+                        // Change =s220 or similar to =s1600 for better quality
+                        let fullSrc = item.thumbnailLink;
+                        if (fullSrc && fullSrc.includes('=s')) {
+                            fullSrc = fullSrc.split('=s')[0] + '=s1600';
+                        } else if (fullSrc && fullSrc.includes('=w')) {
+                            fullSrc = fullSrc.split('=w')[0] + '=s1600';
+                        }
+
+                        return {
+                            src: fullSrc || item.webContentLink,
+                            thumb: item.thumbnailLink,
+                            alt: item.name,
+                            id: item.id
+                        };
+                    });
+                    console.log('Gallery data loaded successfully with high-res thumbnails');
+                } catch (e) {
+                    console.error('Failed to parse gallery JSON:', e);
+                }
+            }
+        }
+    });
+
+    function openLightbox(el) {
+        const id = el.getAttribute('data-id');
+
+        // Find index in our data array
+        currentIndex = galleryItems.findIndex(item => item.id === id);
+        if (currentIndex === -1) {
+            // Fallback if data array is not ready, use element attributes
+            currentIndex = 0;
+            const tempItem = {
+                src: el.getAttribute('data-src'),
+                alt: el.getAttribute('data-name'),
+                id: id
+            };
+            if (!galleryItems.length) galleryItems.push(tempItem);
+        }
+
         updateLightboxContent();
 
         lightbox.classList.remove('hidden');
-        // Small delay to allow display:flex to apply before adding opacity
         requestAnimationFrame(() => {
             lightbox.classList.remove('opacity-0');
             lightboxImg.classList.remove('scale-95');
             lightboxImg.classList.add('scale-100');
         });
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox(e) {
-        // If e is null (close button) or target is the background
         if (!e || e.target === lightbox) {
             lightbox.classList.add('opacity-0');
             lightboxImg.classList.remove('scale-100');
@@ -156,12 +207,12 @@
     }
 
     function navigate(direction, e) {
-        e.stopPropagation(); // Prevent closing
+        if (e) e.stopPropagation();
+        if (galleryItems.length === 0) return;
+
         currentIndex = (currentIndex + direction + galleryItems.length) % galleryItems.length;
 
-        // Fade out slightly
         lightboxImg.style.opacity = '0.5';
-
         setTimeout(() => {
             updateLightboxContent();
             lightboxImg.style.opacity = '1';
@@ -169,19 +220,18 @@
     }
 
     function updateLightboxContent() {
+        if (galleryItems.length === 0) return;
         const item = galleryItems[currentIndex];
         lightboxImg.src = item.src;
         lightboxImg.alt = item.alt;
         lightboxCaption.textContent = item.alt;
     }
 
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (lightbox.classList.contains('hidden')) return;
-
         if (e.key === 'Escape') closeLightbox(null);
-        if (e.key === 'ArrowLeft') navigate(-1, { stopPropagation: () => { } });
-        if (e.key === 'ArrowRight') navigate(1, { stopPropagation: () => { } });
+        if (e.key === 'ArrowLeft') navigate(-1);
+        if (e.key === 'ArrowRight') navigate(1);
     });
 </script>
 {% endblock %}

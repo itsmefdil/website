@@ -14,16 +14,6 @@ from utils.yaml_loader import YAMLLoader
 from datetime import datetime
 import glob
 from urllib.parse import quote
-from PIL import Image
-
-# Try to import pillow_heif for HEIC support
-try:
-    import pillow_heif
-    pillow_heif.register_heif_opener()
-    HEIC_SUPPORTED = True
-except ImportError:
-    print("Warning: pillow_heif not installed. HEIC files will be skipped.")
-    HEIC_SUPPORTED = False
 
 
 class StaticSiteBuilder:
@@ -135,75 +125,6 @@ class StaticSiteBuilder:
 
         return image_name
 
-    def convert_heic_to_jpg(self, heic_path, output_dir="static/images/gallery/converted"):
-        """Convert HEIC file to JPG format"""
-        if not HEIC_SUPPORTED:
-            return None
-
-        try:
-            os.makedirs(output_dir, exist_ok=True)
-            base_name = os.path.splitext(os.path.basename(heic_path))[0]
-            jpg_path = os.path.join(output_dir, f"{base_name}.jpg")
-
-            if os.path.exists(jpg_path):
-                return jpg_path.replace("static/", "")
-
-            with Image.open(heic_path) as img:
-                if img.mode != "RGB":
-                    img = img.convert("RGB")
-                img.save(jpg_path, "JPEG", quality=90, optimize=True)
-                print(f"Converted {heic_path} to {jpg_path}")
-
-            return jpg_path.replace("static/", "")
-
-        except Exception as e:
-            print(f"Error converting {heic_path}: {e}")
-            return None
-
-    def get_gallery_images(self):
-        """Get all images from gallery folder with HEIC support"""
-        gallery_path = "static/images/gallery"
-        image_extensions = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp", "*.HEIC", "*.heic"]
-        images = []
-
-        os.makedirs(gallery_path, exist_ok=True)
-
-        for ext in image_extensions:
-            pattern = os.path.join(gallery_path, ext)
-            found_images = glob.glob(pattern, recursive=False)
-
-            for img in found_images:
-                if "/converted/" in img or "\\converted\\" in img:
-                    continue
-
-                filename = os.path.basename(img)
-                file_ext = os.path.splitext(filename)[1].lower()
-
-                if file_ext in [".heic"]:
-                    if not HEIC_SUPPORTED:
-                        print(f"Skipping {filename} - HEIC support not available")
-                        continue
-
-                    converted_path = self.convert_heic_to_jpg(img)
-                    if converted_path:
-                        images.append({
-                            "path": converted_path,
-                            "filename": os.path.basename(converted_path),
-                            "alt": filename.split(".")[0].replace("-", " ").replace("_", " ").title(),
-                            "original_format": "HEIC",
-                        })
-                else:
-                    relative_path = img.replace("static/", "")
-                    images.append({
-                        "path": relative_path,
-                        "filename": filename,
-                        "alt": filename.split(".")[0].replace("-", " ").replace("_", " ").title(),
-                        "original_format": file_ext.upper().replace(".", ""),
-                    })
-
-        images.sort(key=lambda x: x["filename"])
-        print(f"Gallery loaded: {len(images)} images total")
-        return images
 
     def clean_output_dir(self):
         """Clean the output directory"""
@@ -242,7 +163,7 @@ class StaticSiteBuilder:
                 sponsors = sponsor_data.get("sponsors", []) if sponsor_data else []
                 active_sponsors = [sponsor for sponsor in sponsors if sponsor.get("active", True)]
                 
-                gallery_images = self.get_gallery_images()
+                gallery_api_url = "https://devops-jogja-calendar.vercel.app/gallery"
                 
                 # Add current_url for sharing
                 current_url = f"{self.app.jinja_env.globals['base_url']}/"
@@ -253,7 +174,7 @@ class StaticSiteBuilder:
                     upcoming_events=upcoming_events,
                     latest_events=latest_events,
                     sponsors=active_sponsors,
-                    gallery_images=gallery_images,
+                    gallery_api_url=gallery_api_url,
                     current_url=current_url,
                     current_page="index",
                 )
@@ -427,9 +348,14 @@ class StaticSiteBuilder:
         """Build gallery page"""
         with self.app.app_context():
             with self.app.test_request_context():
-                gallery_images = self.get_gallery_images()
+                gallery_api_url = "https://devops-jogja-calendar.vercel.app/gallery"
                 current_url = f"{self.app.jinja_env.globals['base_url']}/gallery/"
-                html = render_template("gallery.html", gallery_images=gallery_images, current_url=current_url, current_page="gallery")
+                html = render_template(
+                    "gallery.html", 
+                    gallery_api_url=gallery_api_url,
+                    current_url=current_url, 
+                    current_page="gallery"
+                )
                 self.save_page(html, "gallery/index.html")
         print("\n🔧 Generating additional files...")
         self.create_nojekyll_file()

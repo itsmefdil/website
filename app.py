@@ -4,58 +4,12 @@ from utils.yaml_loader import YAMLLoader
 import os
 import glob
 from datetime import datetime
-from PIL import Image
-
-# Try to import pillow_heif for HEIC support
-try:
-    import pillow_heif
-
-    # Register HEIF opener with Pillow
-    pillow_heif.register_heif_opener()
-    HEIC_SUPPORTED = True
-except ImportError:
-    print("Warning: pillow_heif not installed. HEIC files will be skipped.")
-    HEIC_SUPPORTED = False
 
 app = Flask(__name__)
 
 # Initialize parsers
 markdown_parser = MarkdownParser()
 yaml_loader = YAMLLoader()
-
-
-def convert_heic_to_jpg(heic_path, output_dir="static/images/gallery/converted"):
-    """Convert HEIC file to JPG format"""
-    if not HEIC_SUPPORTED:
-        return None
-
-    try:
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Get filename without extension
-        base_name = os.path.splitext(os.path.basename(heic_path))[0]
-        jpg_path = os.path.join(output_dir, f"{base_name}.jpg")
-
-        # Check if converted file already exists
-        if os.path.exists(jpg_path):
-            return jpg_path.replace("static/", "")
-
-        # Convert HEIC to JPG
-        with Image.open(heic_path) as img:
-            # Convert to RGB if necessary
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-
-            # Save as JPG with high quality
-            img.save(jpg_path, "JPEG", quality=90, optimize=True)
-            print(f"Converted {heic_path} to {jpg_path}")
-
-        return jpg_path.replace("static/", "")
-
-    except Exception as e:
-        print(f"Error converting {heic_path}: {e}")
-        return None
 
 
 def get_image_path(image_name, image_type="blog"):
@@ -98,87 +52,6 @@ def get_image_path(image_name, image_type="blog"):
     return image_name
 
 
-def get_gallery_images():
-    """Get all images from gallery folder with HEIC support"""
-    gallery_path = "static/images/gallery"
-    image_extensions = [
-        "*.jpg",
-        "*.jpeg",
-        "*.png",
-        "*.gif",
-        "*.webp",
-        "*.HEIC",
-        "*.heic",
-    ]
-    images = []
-
-    # Create gallery directory if it doesn't exist
-    os.makedirs(gallery_path, exist_ok=True)
-
-    for ext in image_extensions:
-        pattern = os.path.join(gallery_path, ext)
-        found_images = glob.glob(pattern, recursive=False)
-
-        for img in found_images:
-            # Skip files in subdirectories like 'converted'
-            if "/converted/" in img or "\\converted\\" in img:
-                continue
-
-            filename = os.path.basename(img)
-            file_ext = os.path.splitext(filename)[1].lower()
-
-            # Handle HEIC files
-            if file_ext in [".heic"]:
-                if not HEIC_SUPPORTED:
-                    print(f"Skipping {filename} - HEIC support not available")
-                    continue
-
-                # Convert HEIC to JPG
-                converted_path = convert_heic_to_jpg(img)
-                if converted_path:
-                    # Use converted JPG file
-                    images.append(
-                        {
-                            "path": converted_path,
-                            "filename": os.path.basename(converted_path),
-                            "alt": filename.split(".")[0]
-                            .replace("-", " ")
-                            .replace("_", " ")
-                            .title(),
-                            "original_format": "HEIC",
-                        }
-                    )
-                    print(f"Added HEIC file: {filename} -> {converted_path}")
-                else:
-                    # Fallback: skip this file if conversion failed
-                    print(f"Skipping {filename} - conversion failed")
-                    continue
-            else:
-                # Handle regular image files
-                relative_path = img.replace("static/", "")
-                images.append(
-                    {
-                        "path": relative_path,
-                        "filename": filename,
-                        "alt": filename.split(".")[0]
-                        .replace("-", " ")
-                        .replace("_", " ")
-                        .title(),
-                        "original_format": file_ext.upper().replace(".", ""),
-                    }
-                )
-
-    # Sort by filename
-    images.sort(key=lambda x: x["filename"])
-
-    print(f"Gallery loaded: {len(images)} images total")
-    if images:
-        for img in images:
-            print(f"  - {img['filename']} ({img['original_format']})")
-
-    return images
-
-
 @app.route("/")
 def index():
     """Homepage with modern tech infrastructure design"""
@@ -193,8 +66,7 @@ def index():
     # Filter only active sponsors
     active_sponsors = [sponsor for sponsor in sponsors if sponsor.get("active", True)]
 
-    # Get gallery images
-    gallery_images = get_gallery_images()
+    gallery_api_url = "https://devops-jogja-calendar.vercel.app/gallery"
 
     return render_template(
         "index.html",
@@ -202,7 +74,7 @@ def index():
         upcoming_events=upcoming_events,
         latest_events=latest_events,
         sponsors=active_sponsors,
-        gallery_images=gallery_images,
+        gallery_api_url=gallery_api_url,
         current_page="index",
     )
 
@@ -262,9 +134,11 @@ def about():
 @app.route("/gallery")
 def gallery():
     """Gallery page"""
-    gallery_images = get_gallery_images()
+    gallery_api_url = "https://devops-jogja-calendar.vercel.app/gallery"
     return render_template(
-        "gallery.html", gallery_images=gallery_images, current_page="gallery"
+        "gallery.html", 
+        gallery_api_url=gallery_api_url,
+        current_page="gallery"
     )
 
 
@@ -340,6 +214,4 @@ if __name__ == "__main__":
     os.makedirs("content/event", exist_ok=True)
     os.makedirs("static/organizer", exist_ok=True)
     os.makedirs("static/images", exist_ok=True)
-    os.makedirs("static/images/gallery", exist_ok=True)
-
     app.run(debug=True, host="0.0.0.0", port=3008)
