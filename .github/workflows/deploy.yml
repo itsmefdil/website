@@ -57,6 +57,15 @@ jobs:
       - name: Build Tailwind CSS
         run: npm run build-css-prod
 
+      - name: Verify CSS output
+        run: |
+          if [ ! -f "static/css/output.css" ]; then
+            echo "Error: output.css not found!"
+            exit 1
+          fi
+          echo "CSS file size: $(wc -c < static/css/output.css) bytes"
+          echo "CSS file exists and ready for deployment"
+
       - name: Create required directories
         run: |
           mkdir -p content/blog content/event
