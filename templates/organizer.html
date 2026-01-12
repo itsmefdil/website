@@ -29,36 +29,37 @@
 <section class="py-16 bg-background min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {% if data.organizers %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
             {% for organizer in data.organizers %}
-            <div class="group relative flex flex-col items-center bg-card border border-border p-6 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-bottom-8 fill-mode-both"
+            <div class="group relative flex flex-col items-center bg-card border border-border p-3 md:p-6 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-bottom-8 fill-mode-both"
                 style="animation-delay: {{ loop.index0 * 100 }}ms">
                 <!-- Photo -->
-                <div class="mb-6 relative">
+                <div class="mb-3 md:mb-6 relative">
                     {% if organizer.photo %}
                     <div
-                        class="relative w-32 h-32 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors duration-300">
+                        class="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors duration-300">
                         <img src="{{ url_for('static', filename='organizer/' + organizer.photo) }}"
                             alt="{{ organizer.name }}"
                             class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105">
                     </div>
                     {% else %}
                     <div
-                        class="w-32 h-32 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-3xl font-bold border-2 border-border group-hover:border-primary transition-colors duration-300">
+                        class="w-20 h-20 md:w-32 md:h-32 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xl md:text-3xl font-bold border-2 border-border group-hover:border-primary transition-colors duration-300">
                         {{ organizer.name[0].upper() }}
                     </div>
                     {% endif %}
                 </div>
 
                 <!-- Name & Role -->
-                <h3 class="text-xl font-bold text-foreground mb-1 text-center">{{ organizer.name }}</h3>
+                <h3 class="text-sm md:text-xl font-bold text-foreground mb-1 text-center">{{ organizer.name }}</h3>
                 {% if organizer.role %}
-                <p class="text-sm font-medium text-primary mb-4 text-center">{{ organizer.role }}</p>
+                <p class="text-xs md:text-sm font-medium text-primary mb-2 md:mb-4 text-center">{{ organizer.role }}</p>
                 {% endif %}
 
                 <!-- Bio -->
                 {% if organizer.bio %}
-                <p class="text-muted-foreground text-sm mb-6 text-center line-clamp-3">
+                <p
+                    class="text-muted-foreground text-xs md:text-sm mb-3 md:mb-6 text-center line-clamp-2 md:line-clamp-3">
                     {{ organizer.bio }}
                 </p>
                 {% endif %}
