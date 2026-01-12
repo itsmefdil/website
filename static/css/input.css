@@ -342,6 +342,22 @@
     }
   }
 
+  .slide-in-from-bottom-8 {
+    animation-name: slideInBottom8;
+  }
+
+  @keyframes slideInBottom8 {
+    from {
+      transform: translateY(2rem);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
   /* Grid Backgrounds */
   .bg-grid-pattern {
     background-size: 40px 40px;
